@@ -1,0 +1,10 @@
+spring.datasource.url: jdbc:h2:file:./camunda-h2-database
+spring.web.resources.static-locations: file:src/main/resources/static/
+
+camunda.bpm.admin-user:
+  id: demo
+  password: demo
+
+camunda.bpm.webapp:
+  header-security:
+    content-security-policy-disabled: true

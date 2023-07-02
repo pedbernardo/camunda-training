@@ -1,0 +1,55 @@
+<form>
+  <div class="form-group">
+    <label for="coin" class="control-label">Moeda</label>
+    <input type="text" id="coin" class="form-control" cam-variable-name="coin" cam-variable-type="String" disabled />
+  </div>
+
+  <div class="form-group">
+    <label for="buyQuote" class="control-label">Cotação de Compra</label>
+    <input type="text" ng-model="buyQuote" id="buyQuote" class="form-control" cam-variable-name="buyQuote"
+      cam-variable-type="Double" disabled />
+  </div>
+
+  <div class="form-group">
+    <label for="sellQuote" class="control-label">Cotação de Venda</label>
+    <input type="text" ng-model="sellQuote" id="sellQuote" class="form-control" cam-variable-name="sellQuote"
+      cam-variable-type="Double" disabled />
+  </div>
+
+  <div class="form-group">
+    <label for="decision" class="control-label">Decisão</label>
+    <select id="decision" class="form-control" cam-variable-name="decision" cam-variable-type="String">
+      <option value>Selecione...</option>
+      <option value="BUY">Comprar</option>
+      <option value="DONT_BUY">Não comprar</option>
+      <option value="NEW_QUOTE">Cotar novamente</option>
+    </select>
+  </div>
+
+  <script cam-script type="text/form-script">
+    function getCoinQuote(coin) {
+      return fetch(`https://www.mercadobitcoin.net/api/${coin}/ticker/`)
+        .then(res => res.json())
+        .then(({ ticker }) => {
+          console.log(`retorno para moeda ${coin}`)
+          console.log(ticker)
+          return { buy: ticker.buy, sell: ticker.sell }
+        })
+    }
+
+    getCoinQuote('BTC')
+
+    camForm.on('variables-fetched', async () => {
+        const coin = camForm.variableManager.variableValue('coin')
+        const { buy, sell } = await getCoinQuote(coin)
+
+        $scope.buyQuote = buy
+        $scope.sellQuote = sell
+
+        /** @info forces AngularJS re-run digest cycle due usage of async call */
+        $scope.$apply()
+
+        console.log({ buy, sell })
+    })
+  </script>
+</form>
