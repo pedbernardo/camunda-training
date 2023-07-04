@@ -27,29 +27,37 @@
   </div>
 
   <script cam-script type="text/form-script">
-    function getCoinQuote(coin) {
-      return fetch(`https://www.mercadobitcoin.net/api/${coin}/ticker/`)
-        .then(res => res.json())
-        .then(({ ticker }) => {
-          console.log(`retorno para moeda ${coin}`)
-          console.log(ticker)
-          return { buy: ticker.buy, sell: ticker.sell }
-        })
-    }
+    // function getCoinQuote(coin) {
+    //   return fetch(`https://www.mercadobitcoin.net/api/${coin}/ticker/`)
+    //     .then(res => res.json())
+    //     .then(({ ticker }) => {
+    //       console.log(`retorno para moeda ${coin}`)
+    //       console.log(ticker)
+    //       return { buy: ticker.buy, sell: ticker.sell }
+    //     })
+    // }
 
-    getCoinQuote('BTC')
+    // getCoinQuote('BTC')
 
-    camForm.on('variables-fetched', async () => {
-        const coin = camForm.variableManager.variableValue('coin')
-        const { buy, sell } = await getCoinQuote(coin)
+    console.log({ camForm })
 
-        $scope.buyQuote = buy
-        $scope.sellQuote = sell
-
-        /** @info forces AngularJS re-run digest cycle due usage of async call */
-        $scope.$apply()
-
-        console.log({ buy, sell })
+    camForm.on('variables-fetched', () => {
+      console.log('variables-fetched')
     })
+
+    camForm.trigger('variables-fetched')
+
+    // camForm.on('variables-fetched', async () => {
+    //     const coin = camForm.variableManager.variableValue('coin')
+    //     const { buy, sell } = await getCoinQuote(coin)
+
+    //     $scope.buyQuote = buy
+    //     $scope.sellQuote = sell
+
+    //     /** @info forces AngularJS re-run digest cycle due usage of async call */
+    //     $scope.$apply()
+
+    //     console.log({ buy, sell })
+    // })
   </script>
 </form>
