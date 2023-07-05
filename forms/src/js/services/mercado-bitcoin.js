@@ -1,10 +1,12 @@
+import { http } from "./http"
+
 export function getCoinTicker (coin) {
-  return fetch(`https://www.mercadobitcoin.net/api/${coin}/ticker/`)
-    .then(res => res.json())
-    .then(({ ticker }) => {
+  return http.get(`/${coin}/ticker/`)
+    .then(({ data }) => {
+      console.log(data)
       return {
-        buy: ticker.buy,
-        sell: ticker.sell
+        buy: data.ticker.buy,
+        sell: data.ticker.sell
       }
     })
 }
