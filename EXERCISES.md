@@ -16,5 +16,5 @@
 - [ ] **auto deploy**: enable Camunda Run auto-deploy feature
 
 # Exercise 3
-
-# Exercise 4
+- [ ] integrate the project back to Camunda Spring using `buildOnWatch`
+- [ ] **forms with newer frameworks:** refactory using petite-vue
