@@ -1,42 +1,40 @@
 import { getCoinTicker } from '../../js/services/mercado-bitcoin'
 
 export default function ({ camForm, $scope }) {
-  const formBitCoinTicker = bitCoinTicker($scope, camForm)
+  camForm.on('variables-fetched', async () => {
+    const { createApp } = await loadPetiteVue()
 
-  camForm.on('variables-fetched', () => {
-    formBitCoinTicker.start()
-
-    setTimeout(() => {
-      formBitCoinTicker.update('ETH')
-    }, 1000)
+    createApp(
+      bitCoinTicker(camForm)
+    ).mount()
   })
 }
 
-function bitCoinTicker ($scope, camForm) {
+function bitCoinTicker (camForm) {
   return {
-    start,
-    update
+    buyQuote: '',
+    sellQuote: '',
+
+    start () {
+      const coin = camForm.variableManager.variableValue('coin')
+      this.update(coin)
+    },
+
+    update (coin) {
+      return getCoinTicker(coin)
+        .then(this.applyTicker)
+        .catch(console.error)
+    },
+
+    applyTicker ({ buy, sell }) {
+      this.buyQuote = buy
+      this.sellQuote = sell
+
+      console.log(`ticker applied: buy - $${Number(buy).toFixed(2)} | sell - $${Number(sell).toFixed(2)}`)
+    }
   }
+}
 
-  async function start () {
-    const coin = camForm.variableManager.variableValue('coin')
-    update(coin)
-  }
-
-  async function update (coin) {
-    $scope.coin = coin
-
-    return getCoinTicker(coin)
-      .then(applyTicker)
-      .catch(console.error)
-  }
-
-  function applyTicker ({ buy, sell }) {
-    $scope.buyQuote = buy
-    $scope.sellQuote = sell
-    /** @info forces AngularJS re-run digest cycle due usage of async call */
-    $scope.$apply()
-
-    console.log(`ticker applied: buy - $${Number(buy).toFixed(2)} | sell - $${Number(sell).toFixed(2)}`)
-  }
+function loadPetiteVue () {
+  return import('https://unpkg.com/petite-vue?module')
 }

@@ -1,10 +1,11 @@
 import { defineConfig } from 'cam-baker'
 
 export default defineConfig({
-  camundaRun: {
-    autoDeploy: true
-  },
+  outDir: '../camunda/src/main/resources/static/forms',
   entryPoints: {
     html: 'form.html'
+  },
+  watch: {
+    buildOnWatch: true
   }
 })
