@@ -1,26 +1,28 @@
-<div class="form-group">
-  <label for="coin" class="control-label">Moeda</label>
-  <input type="text" id="coin" class="form-control" cam-variable-name="coin" cam-variable-type="String" disabled />
-</div>
+<div v-scope @vue:mounted="start">
+  <div class="form-group">
+    <label for="coin" class="control-label">Moeda</label>
+    <input type="text" id="coin" class="form-control" cam-variable-name="coin" cam-variable-type="String" disabled />
+  </div>
 
-<div class="form-group">
-  <label for="buyQuote" class="control-label">Cotação de Compra</label>
-  <input type="text" ng-model="buyQuote" id="buyQuote" class="form-control" cam-variable-name="buyQuote"
-    cam-variable-type="Double" disabled />
-</div>
+  <div class="form-group">
+    <label for="buyQuote" class="control-label">Cotação de Compra</label>
+    <input type="text" v-model="buyQuote" id="buyQuote" class="form-control" cam-variable-name="buyQuote"
+      cam-variable-type="Double" disabled />
+  </div>
 
-<div class="form-group">
-  <label for="sellQuote" class="control-label">Cotação de Venda</label>
-  <input type="text" ng-model="sellQuote" id="sellQuote" class="form-control" cam-variable-name="sellQuote"
-    cam-variable-type="Double" disabled />
-</div>
+  <div class="form-group">
+    <label for="sellQuote" class="control-label">Cotação de Venda</label>
+    <input type="text" v-model="sellQuote" id="sellQuote" class="form-control" cam-variable-name="sellQuote"
+      cam-variable-type="Double" disabled />
+  </div>
 
-<div class="form-group">
-  <label for="decision" class="control-label">Decisão</label>
-  <select id="decision" class="form-control" cam-variable-name="decision" cam-variable-type="String">
-    <option value>Selecione...</option>
-    <option value="BUY">Comprar</option>
-    <option value="DONT_BUY">Não comprar</option>
-    <option value="NEW_QUOTE">Cotar novamente</option>
-  </select>
+  <div class="form-group">
+    <label for="decision" class="control-label">Decisão</label>
+    <select id="decision" class="form-control" cam-variable-name="decision" cam-variable-type="String">
+      <option value>Selecione...</option>
+      <option value="BUY">Comprar</option>
+      <option value="DONT_BUY">Não comprar</option>
+      <option value="NEW_QUOTE">Cotar novamente</option>
+    </select>
+  </div>
 </div>
