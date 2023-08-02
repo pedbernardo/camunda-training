@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_0fr9mxs" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.11.0">
+  <bpmn:process id="coin-quotes-connector" name="Cotação de Moedas (Connector)" isExecutable="true" camunda:versionTag="1.0.0">
+    <bpmn:startEvent id="start-quote" name="Cotação Iniciada" camunda:formKey="embedded:app:forms/start-quote.html">
+      <bpmn:outgoing>SequenceFlow_1fp17al</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_1fp17al" sourceRef="start-quote" targetRef="Activity_1j79uj0" />
+    <bpmn:endEvent id="EndEvent_0x6ir2l" name="Moeda comprada">
+      <bpmn:incoming>Flow_1unjoxb</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_16gzt2m" sourceRef="get-quote" targetRef="Gateway_0q9dbm1" />
+    <bpmn:userTask id="get-quote" name="Avaliar Compra" camunda:formKey="embedded:app:forms/get-quote.html">
+      <bpmn:incoming>Flow_1swr4yv</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_16gzt2m</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="Gateway_0q9dbm1" default="Flow_1unjoxb">
+      <bpmn:incoming>SequenceFlow_16gzt2m</bpmn:incoming>
+      <bpmn:outgoing>Flow_1unjoxb</bpmn:outgoing>
+      <bpmn:outgoing>Flow_10h1w4e</bpmn:outgoing>
+      <bpmn:outgoing>Flow_02efahy</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_1unjoxb" name="Comprar" sourceRef="Gateway_0q9dbm1" targetRef="EndEvent_0x6ir2l" />
+    <bpmn:endEvent id="Event_12r7abm" name="Moeda não comprada">
+      <bpmn:incoming>Flow_10h1w4e</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_10h1w4e" name="Não comprar" sourceRef="Gateway_0q9dbm1" targetRef="Event_12r7abm">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${decisao=="NAO_COMPRAR"}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_02efahy" name="Cotar novamente" sourceRef="Gateway_0q9dbm1" targetRef="Activity_1j79uj0">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${decisao=="COTAR_NOVAMENTE"}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1swr4yv" sourceRef="Activity_1j79uj0" targetRef="get-quote" />
+    <bpmn:serviceTask id="Activity_1j79uj0" name="Obter Cotação">
+      <bpmn:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="headers">
+              <camunda:map>
+                <camunda:entry key="accept">application/json</camunda:entry>
+              </camunda:map>
+            </camunda:inputParameter>
+            <camunda:inputParameter name="method">GET</camunda:inputParameter>
+            <camunda:inputParameter name="url">https://www.mercadobitcoin.net/api/${moeda}/ticker</camunda:inputParameter>
+            <camunda:outputParameter name="cotacao">${S(response)}</camunda:outputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>http-connector</camunda:connectorId>
+        </camunda:connector>
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_1fp17al</bpmn:incoming>
+      <bpmn:incoming>Flow_02efahy</bpmn:incoming>
+      <bpmn:outgoing>Flow_1swr4yv</bpmn:outgoing>
+    </bpmn:serviceTask>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="coin-quotes-connector">
+      <bpmndi:BPMNShape id="EndEvent_0x6ir2l_di" bpmnElement="EndEvent_0x6ir2l">
+        <dc:Bounds x="702" y="159" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="677" y="202" width="86" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="UserTask_08mft2c_di" bpmnElement="get-quote">
+        <dc:Bounds x="400" y="137" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0q9dbm1_di" bpmnElement="Gateway_0q9dbm1" isMarkerVisible="true">
+        <dc:Bounds x="545" y="152" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_12r7abm_di" bpmnElement="Event_12r7abm">
+        <dc:Bounds x="702" y="262" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="692" y="305" width="56" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="start-quote">
+        <dc:Bounds x="182" y="159" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="159" y="202" width="82" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0kvd6wm_di" bpmnElement="Activity_1j79uj0">
+        <dc:Bounds x="260" y="137" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1unjoxb_di" bpmnElement="Flow_1unjoxb">
+        <di:waypoint x="595" y="177" />
+        <di:waypoint x="702" y="177" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="607" y="159" width="45" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1swr4yv_di" bpmnElement="Flow_1swr4yv">
+        <di:waypoint x="360" y="177" />
+        <di:waypoint x="400" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_16gzt2m_di" bpmnElement="SequenceFlow_16gzt2m">
+        <di:waypoint x="500" y="177" />
+        <di:waypoint x="545" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_10h1w4e_di" bpmnElement="Flow_10h1w4e">
+        <di:waypoint x="570" y="202" />
+        <di:waypoint x="570" y="280" />
+        <di:waypoint x="702" y="280" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="607" y="263" width="65" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_02efahy_di" bpmnElement="Flow_02efahy">
+        <di:waypoint x="570" y="152" />
+        <di:waypoint x="570" y="100" />
+        <di:waypoint x="310" y="100" />
+        <di:waypoint x="310" y="137" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="399" y="82" width="85" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1fp17al_di" bpmnElement="SequenceFlow_1fp17al">
+        <di:waypoint x="218" y="177" />
+        <di:waypoint x="260" y="177" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
